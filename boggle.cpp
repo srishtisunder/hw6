@@ -95,5 +95,29 @@ bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>
 								   std::string word, std::set<std::string>& result, unsigned int r, unsigned int c, int dr, int dc)
 {
 //add your solution here!
+{
+    // Check bounds
+    if (r >= board.size() || c >= board[0].size()) {
+        return false;
+    }
 
+    // Add the current letter to the word
+    word += board[r][c];
+
+    // If word is neither in the prefix set nor the dictionary, prune
+    if (prefix.find(word) == prefix.end() && dict.find(word) == dict.end()) {
+        return false;
+    }
+
+    // Recurse to the next cell in the same direction
+    bool longerWordFound = boggleHelper(dict, prefix, board, word, result, r + dr, c + dc, dr, dc);
+
+    // If this is a dictionary word and we didn't find a longer word in this path
+    if (dict.find(word) != dict.end() && !longerWordFound) {
+        result.insert(word);
+    }
+
+    // Return whether we found this word or a longer word down the line
+    return longerWordFound || dict.find(word) != dict.end();
+}
 }
